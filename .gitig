@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>微信红包</title>
+    <style>
+        body{
+            padding: 0;
+            margin: 0;
+            background-color: #eeeeee;
+            font: 16px/1.8 "微软雅黑";
+        }
+        .container{
+            width: 700px;
+            margin: 0 auto;
+        }
+        h1{
+            font-size: 3em;
+            margin: 20px 0;
+        }
+        input{
+            margin: 10px 0;
+        }
+        a  {
+            display: block;
+            width: 80px;
+            text-decoration: none;
+            margin: 20px auto;
+            background-color: #0f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .line{
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+        }
+        #list{
+            width: 500px;
+            border: 1px solid #DBDBDB;
+            padding: 10px;
+            BACKGROUND: #F5F5F5;
+            text-align: center;
+            margin: 0 auto;
+            list-style: none;
+        }
+        #buzu{
+            display:none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>原生javascript实现微信红包</h1>
+        <div class="line">
+            <lable for="num">红包个数：</lable>
+            <input type="text" id="counts" placeholder="输入红包个数" value="5"/>
+        </div>
+        <div class="line">
+            <lable for="total">总 金 额：</lable>
+            <input type="text" id="totals" placeholder="输入总金额" value="5"/>
+        </div>
+        <a onclick="chai()"  class="line" href="#">发红包</a>
+    </div>
+    <ul id="list"></ul>
+    <div>
+        <button type="button" onclick="show()">不足</button>
+        <p id="buzu">红包先抢的，一般数目会比后抢的大，特别是最后几个很少，所以在控制最大红包数目还存在逻辑问题，以待改进。</p>
+    </div>
+    <script>
+        var total=-1;//存储红包剩余总金额
+        var count=-1;//存储剩余个数
+        function chai(){
+            if(total==-1){total=totals.value;}//初始化总金额为totals中的值
+            if(count==-1){count=counts.value;}//初始化总数为counts中的值
+            if(count>1){//如果不是最后一个红包
+                var safe_min=0.01*count;//保证剩余每个人最少能收到0.01元
+                var n=parseInt(Math.random()*count+1);//红包的随机系数
+                console.log(n);
+                var safe_max=(total-safe_min)/count*n;//随机安全上限，保证不被一次强光！
+                //在安全下线至安全上线之间取随机（*100或/100，为了避免精度超范围）
+                money=(Math.random()*(safe_max*100-safe_min*100)+safe_min*100)/100;
+                money=money.toFixed(2);//金额按两位小数四舍五入
+                count--;//个数-1
+                total=(total-money).toFixed(2);//总数-本次领取的红包个数
+                list.innerHTML+="<li>"+money+", 余额:"+total+"</li>";//向ol中添加红包记录
+            }else if(count==1){//如果是最后一个红包
+                count--;//个数-为0
+                list.innerHTML+="<li>"+total+", 余额:"+0+"</li>";//剩余金额都给最后一个
+                total=0;
+            }else if(count==0){//如果个数已经为0，则提示手慢了
+                alert("手慢了，红包抢完了");
+            }
+        }
+        var ma=1;
+        function show(){
+            if(ma=1){
+                buzu.style.display="block";
+                ma=0;
+            }else {
+                buzu.style.display="none";
+                ma=1;
+            }
+        }
+    </script>
+</body>
+</html>
